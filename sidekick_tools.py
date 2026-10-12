@@ -20,7 +20,7 @@ wikipedia.set_user_agent("agentic-track-course (https://edwarddonner.com)")
 
 search = GoogleSerperRun(api_wrapper=GoogleSerperAPIWrapper())
 
-wikipedia_lookup = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
+wikipedia_lookup = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(wiki_client=wikipedia))
 
 
 @tool
