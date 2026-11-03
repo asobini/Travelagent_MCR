@@ -11,6 +11,7 @@ import os
 import re
 import uuid
 from datetime import datetime
+from typing import Any
 
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
@@ -219,8 +220,8 @@ class Sidekick:
         self.memory = InMemorySaver()
         self.tools = None
         self.sessions = None
-        self.worker = None
-        self.evaluator = None
+        self.worker: Any = None
+        self.evaluator: Any = None
         self.task = ""
         self.success_criteria = ""
         self.attempts = 0
@@ -235,7 +236,7 @@ class Sidekick:
             model="openai:gpt-5.4-mini",
             tools=self.tools,
             system_prompt=f"{WORKER_PROMPT}\nToday is {datetime.now():%A %d %B %Y}.",
-            middleware=[
+            middleware=[  # type: ignore[arg-type]
                 RepairToolPairing(),
                 TolerateToolErrors(),
                 TodoListMiddleware(),
@@ -310,7 +311,7 @@ needs clarification, or seems stuck. Give brief, concrete feedback."""
         config = {"configurable": {"thread_id": self.sidekick_id}}
         pairing_retries = 0
         while True:
-            result = None
+            result: Any = None
             try:
                 async for result in self.worker.astream(payload, config=config, stream_mode="values"):
                     self.todos = (result or {}).get("todos", self.todos)
